@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BenchProject1.Data;
+using BenchProject1.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,90 +10,35 @@ using System.Threading.Tasks;
 
 namespace BenchProject1.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class StockDataController : Controller
     {
-        [Route("[controller]")]
-        // GET: StockDataController
-        //public ActionResult Index()
-        //{
-        //    return View();
-        //}
+        private readonly IStockDataService _stockDataService;
+        private readonly TickContext _context;
 
-        //// GET: StockDataController/Details/5
-        //public ActionResult Details(int id)
-        //{
-        //    return View();
-        //}
-
-        //// GET: StockDataController/Create
-        //public ActionResult Create()
-        //{
-        //    return View();
-        //}
-
-        //// POST: StockDataController/Create
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Create(IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
-
-        //// GET: StockDataController/Edit/5
-        //public ActionResult Edit(int id)
-        //{
-        //    return View();
-        //}
-
-        //// POST: StockDataController/Edit/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
-
-        //// GET: StockDataController/Delete/5
-        //public ActionResult Delete(int id)
-        //{
-        //    return View();
-        //}
-
-        //// POST: StockDataController/Delete/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Delete(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
-        [HttpGet]
-        public List<string> Get()
+        public StockDataController(IStockDataService stockDataService, TickContext context)
         {
-            StockDataService dataService = new StockDataService();            
-            List<string> entries = dataService.CreateCredentials();
+            _stockDataService = stockDataService;
+            _context = context;
+        }
+
+        [HttpGet]
+        //public async Task<IEnumerable<Tick>> Get()
+        //{
+        //    return await _context.Ticks.Find(p => true).ToListAsync();
+
+        //}
+        public List<Tick> Get()
+        {
+            List<Tick> entries = _stockDataService.ReadEntries();
+            UpdateDatabase(entries);
             return entries;
-            
+        }
+        
+        public void UpdateDatabase(List<Tick> entries)
+        {
+
         }
     }
 }

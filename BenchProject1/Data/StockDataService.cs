@@ -1,4 +1,6 @@
-﻿using Google.Apis.Auth.OAuth2;
+﻿using BenchProject1.Data;
+using BenchProject1.Models;
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Microsoft.AspNetCore.Hosting;
@@ -10,16 +12,16 @@ using System.Linq;
 
 namespace BenchProject1
 {
-    public class StockDataService
+    public class StockDataService : IStockDataService
     {
 
         readonly string[] Scopes = { SheetsService.Scope.Spreadsheets };
         readonly string ApplicationName = "StockShares";
         readonly string SpreadsheetId = "1Mmq4Ez8RWsnu4mHy0LZpy7400Q5yKlFawt5FnvuAqio";
-        readonly string sheet = "stocks"; 
+        readonly string sheet = "stocks";
         SheetsService service;
 
-        public List<string> CreateCredentials()
+        public void CreateCredentials()
         {
             GoogleCredential credential;
             using (var stream = new FileStream("credentials.json", FileMode.Open, FileAccess.Read))
@@ -32,13 +34,6 @@ namespace BenchProject1
                 HttpClientInitializer = credential,
                 ApplicationName = ApplicationName,
             });
-
-            List<string> entries = ReadEntries(new List<string>());
-            //entries = CreateEntries(entries);
-            UpdateEntry("258", GetCurrentDateString(), "1400");
-            DeleteEntry("259");
-            return ReadEntries(entries);
-
         }
 
         public string GetCurrentDateString()
@@ -48,24 +43,80 @@ namespace BenchProject1
             return date.ToString();
         }
 
-        public List<string> ReadEntries(List<string> entries)
+        public List<Tick> ReadEntries()
         {
-            var range = $"{sheet}!A2:B252";
-            var request = service.Spreadsheets.Values.Get(SpreadsheetId, range);
-
+            CreateCredentials();
+            var entries = new List<Tick>();
+            var range = $"{sheet}!A2:B";
+            SpreadsheetsResource.ValuesResource.GetRequest request =
+                    service.Spreadsheets.Values.Get(SpreadsheetId, range);
             var response = request.Execute();
-            var values = response.Values;
+            IList<IList<object>> values = response.Values;
             if (values != null && values.Count > 0)
             {
                 foreach (var row in values)
                 {
-                    foreach (var item in row)
+                    if (row.Count == 0) break;
+                    entries.Add(new Tick
                     {
-                        entries.Add(item.ToString());
-                    }
+                        Id = generateID(),
+                        TickDateTime = DateTime.Parse(row[0].ToString()),
+                        TickValue = double.Parse(row[1].ToString())
+                    });
                 }
             }
             return entries;
+        }
+
+        public string TrimDateToDay(DateTime date)
+        {
+            return date.ToString("yyyyMMdd");
+        }
+
+        public List<Tick> ReadEntries(DateTime startDate, DateTime endDate)
+        {
+            CreateCredentials();
+            
+
+            var entries = new List<Tick>();
+            var range = $"{sheet}!A2:B";
+            SpreadsheetsResource.ValuesResource.GetRequest request =
+                    service.Spreadsheets.Values.Get(SpreadsheetId, range);
+            var response = request.Execute();
+            IList<IList<object>> values = response.Values;
+            if (values != null && values.Count > 0)
+            {
+                foreach (var row in values)
+                {
+                    if (row.Count == 0) break;
+                    entries.Add(new Tick
+                    {
+                        Id = generateID(),
+                        TickDateTime = DateTime.Parse(row[0].ToString()),
+                        TickValue = double.Parse(row[1].ToString())
+                    });
+                }
+            }
+
+            var inDateEntries = new List<Tick>();
+
+            for (int i=0; i<entries.Count; i++)
+            {
+                var date = entries.ElementAt(i).TickDateTime;
+                if (DateTime.Compare(endDate, date) < 0
+                    &&
+                   (DateTime.Compare(startDate, date) > 0))
+                {
+                    inDateEntries.Add(entries.ElementAt(i));
+                }
+            }
+
+            return inDateEntries;
+        }
+
+        public string generateID()
+        {
+            return Guid.NewGuid().ToString("N");
         }
 
         public List<string> CreateEntries(List<string> entries)
@@ -88,7 +139,7 @@ namespace BenchProject1
 
         public void UpdateEntry(string cellRow, string stockDate, string cellValue)
         {
-            var range = $"{sheet}!A"  + cellRow + ":B" + cellRow;
+            var range = $"{sheet}!A" + cellRow + ":B" + cellRow;
             var valueRange = new ValueRange();
 
             var objectList = new List<object>() { stockDate, cellValue };
@@ -107,6 +158,6 @@ namespace BenchProject1
             var deleteRequest = service.Spreadsheets.Values.Clear(requestBody, SpreadsheetId, range);
             var deleteResponse = deleteRequest.Execute();
         }
-        
+
     }
 }

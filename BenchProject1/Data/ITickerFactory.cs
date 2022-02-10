@@ -8,6 +8,6 @@ namespace BenchProject1.Data
 {
     public interface ITickerFactory
     {
-        Ticker Create(List<Tick> Ticks);
+        Ticker Create(List<Tick> Ticks, string message);
     }
 }

@@ -1,11 +1,15 @@
-﻿using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
+using System;
 
 namespace BenchProject1.Models
 {
     public class Tick
     {
-        public string id { get; set; }
-        public DateTime tickDateTime { get; set; }
-        public double tickValue { get; set; }
+        [BsonId]
+        [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
+        public string Id { get; set; }
+        public DateTime TickDateTime { get; set; }
+        public double TickValue { get; set; }
     }
 }

@@ -10,14 +10,14 @@ namespace BenchProject1.Data
     {
         public TickerFactory() { }
 
-        public Ticker Create(List<Tick> Ticks)
+        public Ticker Create(List<Tick> Ticks, string message)
         {
             var Ticker = new Ticker();
             Ticker.Ticks = Ticks;
-            Ticker.IsOpen = DateTime.Now.Hour >= 16;
+            return Ticker;
         }
-   
 
-        
+
+
     }
 }

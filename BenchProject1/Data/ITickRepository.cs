@@ -1,11 +1,11 @@
-﻿using System;
+﻿using BenchProject1.Models;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BenchProject1.Data
 {
-    interface IDataService
+    public interface ITickRepository
     {
+        Task Add(List<Tick> ticks);
     }
 }
