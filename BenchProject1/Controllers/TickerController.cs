@@ -25,47 +25,59 @@ namespace BenchProject1.Controllers
         }
 
         [HttpPost]
-        public Ticker CreateTicker(DateTime startDate, DateTime endDate)
+        public async Task<Ticker> CreateTicker([FromForm] DateTime startDate, [FromForm] DateTime endDate)
         {
             var ticks = _tickRepository.Get(startDate, endDate);
             string error = "";
 
             try
             {
-                if (DatesInDatabase(startDate, endDate, ticks))
+                // if (DatesInDatabase(startDate, endDate, ticks))
+                if (DateTime.Compare(endDate, ticks.Last().TickDateTime) > 0
+                 &&
+               (DateTime.Compare(startDate, ticks.First().TickDateTime) < 0))
                 {
-                    ticks = FetchData(startDate, endDate, ticks);
+                    {
+                        ticks = await FetchData(startDate, endDate, ticks);
+
+                    }
+                    error = "Successful";
+                    return _tickerFactory.Create(ticks, error);
                 }
-                error = "Successful";
-                return _tickerFactory.Create(ticks, error);
             }
             catch (Exception e)
             {
-                ticks = FetchData(startDate, endDate, ticks);
+                ticks = await FetchData(startDate, endDate, ticks);
                 if (ticks.Count == 0) error = "No data";
-                else if (DatesInDatabase(startDate, endDate, ticks)) error = "The given range is too big";
-
-                return _tickerFactory.Create(ticks, error);
-             }
+               // else if (!DatesInDatabase(startDate, endDate, ticks)) error = "The given range is too big";
+               else if (DateTime.Compare(endDate, ticks.Last().TickDateTime) > 0
+                 &&
+               (DateTime.Compare(startDate, ticks.First().TickDateTime) < 0))
+                {
+                    error = "The given range is too big";
+                }
+            }
+            return _tickerFactory.Create(ticks, error);
         }
 
-        public List<Tick> FetchData(DateTime startDate, DateTime endDate, List<Tick> ticks)
+        [HttpGet]
+        public async Task<List<Tick>> FetchData([FromQuery] DateTime startDate, [FromQuery] DateTime endDate, List<Tick> ticks)
         {
             var entries = _stockDataService.ReadEntries();
             var dateEntries = _stockDataService.ReadEntries(startDate, endDate);
-            _tickRepository.Add(dateEntries.Except(ticks).ToList());
+            await _tickRepository.Add(dateEntries.Except(ticks).ToList());
             return dateEntries;
         }
 
-        public bool DatesInDatabase(DateTime startDate, DateTime endDate, List<Tick> ticks)
-        {
-            if (DateTime.Compare(endDate, ticks.Last().TickDateTime) > 0
-                &&
-              (DateTime.Compare(startDate, ticks.First().TickDateTime) < 0))
-            {
-                return true;
-            }
-            else return false;
-        }
+        //public bool DatesInDatabase(DateTime startDate, DateTime endDate, List<Tick> ticks)
+        //{
+        //    if (DateTime.Compare(endDate, ticks.Last().TickDateTime) > 0
+        //        &&
+        //      (DateTime.Compare(startDate, ticks.First().TickDateTime) < 0))
+        //    {
+        //        return true;
+        //    }
+        //    else return false;
+        //}
     }
 }

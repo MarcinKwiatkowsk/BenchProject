@@ -23,22 +23,22 @@ namespace BenchProject1.Controllers
             _context = context;
         }
 
-        [HttpGet]
+       // [HttpGet]
         //public async Task<IEnumerable<Tick>> Get()
         //{
         //    return await _context.Ticks.Find(p => true).ToListAsync();
-
         //}
+        [HttpGet]
         public List<Tick> Get()
         {
             List<Tick> entries = _stockDataService.ReadEntries();
-            UpdateDatabase(entries);
+           // UpdateDatabase(entries);
             return entries;
         }
-        
-        public void UpdateDatabase(List<Tick> entries)
-        {
 
-        }
+        //public void UpdateDatabase(List<Tick> entries)
+        //{
+
+        //}
     }
 }
