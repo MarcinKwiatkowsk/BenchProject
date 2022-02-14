@@ -32,7 +32,6 @@ namespace BenchProject1.Controllers
 
             try
             {
-                // if (DatesInDatabase(startDate, endDate, ticks))
                 if (DateTime.Compare(endDate, ticks.Last().TickDateTime) > 0
                  &&
                (DateTime.Compare(startDate, ticks.First().TickDateTime) < 0))
@@ -49,7 +48,6 @@ namespace BenchProject1.Controllers
             {
                 ticks = await FetchData(startDate, endDate, ticks);
                 if (ticks.Count == 0) error = "No data";
-               // else if (!DatesInDatabase(startDate, endDate, ticks)) error = "The given range is too big";
                else if (DateTime.Compare(endDate, ticks.Last().TickDateTime) > 0
                  &&
                (DateTime.Compare(startDate, ticks.First().TickDateTime) < 0))
@@ -65,19 +63,8 @@ namespace BenchProject1.Controllers
         {
             var entries = _stockDataService.ReadEntries();
             var dateEntries = _stockDataService.ReadEntries(startDate, endDate);
-            await _tickRepository.Add(dateEntries.Except(ticks).ToList());
+             _tickRepository.Add(dateEntries.Except(ticks).ToList());
             return dateEntries;
         }
-
-        //public bool DatesInDatabase(DateTime startDate, DateTime endDate, List<Tick> ticks)
-        //{
-        //    if (DateTime.Compare(endDate, ticks.Last().TickDateTime) > 0
-        //        &&
-        //      (DateTime.Compare(startDate, ticks.First().TickDateTime) < 0))
-        //    {
-        //        return true;
-        //    }
-        //    else return false;
-        //}
     }
 }

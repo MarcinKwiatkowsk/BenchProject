@@ -7,7 +7,8 @@ namespace BenchProject1.Data
 {
     public interface ITickRepository
     {
-        Task Add(List<Tick> ticks);
+        public void Add(List<Tick> ticks);
+        public void Add(Tick tick);
         public List<Tick> Get(DateTime start, DateTime end);
         public List<Tick> Get();
     }

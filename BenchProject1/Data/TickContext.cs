@@ -4,7 +4,9 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MongoDB.Driver.Linq;
 using System.Threading.Tasks;
+using MongoDB.Bson;
 
 namespace BenchProject1.Data
 {
@@ -15,9 +17,11 @@ namespace BenchProject1.Data
             var client = new MongoClient(configuration["DatabaseSettings:ConnectionString"]);
             var database = client.GetDatabase(configuration["DatabaseSettings:DatabaseName"]);
 
-             Ticks = database.GetCollection<Tick>(configuration["DatabaseSettings:CollectionName"]);
+            Ticks = database.GetCollection<Tick>(configuration["DatabaseSettings:CollectionName"]).AsQueryable<Tick>().ToList();
+
         }
 
-        public IMongoCollection<Tick> Ticks { get; }
+
+        public List<Tick> Ticks { get; }
     }
 }

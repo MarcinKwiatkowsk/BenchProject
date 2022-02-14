@@ -15,16 +15,22 @@ namespace BenchProject1.Data
         {
             _context = context;
         }
-        public async Task Add(List<Tick> ticks)
+        public void Add(List<Tick> ticks)
         {
-            await _context.Ticks.InsertManyAsync(ticks);
+             _context.Ticks.AddRange(ticks);
+            // _context.Ticks.AddRange(ticks);
+        }
+
+        public void Add(Tick tick)
+        {
+             _context.Ticks.AddRange((IEnumerable<Tick>)tick);
         }
 
         public List<Tick> Get(DateTime start, DateTime end)
         {
-            List<Tick> allTicks = (List<Tick>)_context.Ticks;
+            List<Tick> allTicks = _context.Ticks;
             //List<Tick> tickInDates = allTicks.Select(t => t.TickDateTime > start).Where(t => t.TickDateTime < end);
-            List<Tick> tickInDates = (List<Tick>)allTicks.Where(t => t.TickDateTime > start && t.TickDateTime < end);
+            List<Tick> tickInDates = allTicks.Where(t => t.TickDateTime > start && t.TickDateTime < end).ToList();
             return tickInDates;
         }
 
