@@ -13,11 +13,11 @@ namespace BenchProject1.Controllers
     public class TickerController : ControllerBase
     {
         private readonly ITickerFactory _tickerFactory;
-        private readonly StockDataService _stockDataService;
-        private readonly TickRepository _tickRepository;
+        private readonly IStockDataService _stockDataService;
+        private readonly ITickRepository _tickRepository;
 
 
-        public TickerController(ITickerFactory tickerFactory, StockDataService stockDataService, TickRepository tickRepository)
+        public TickerController(ITickerFactory tickerFactory, IStockDataService stockDataService, ITickRepository tickRepository)
         {
             _tickerFactory = tickerFactory;
             _stockDataService = stockDataService;

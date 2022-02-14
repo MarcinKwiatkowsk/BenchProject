@@ -33,6 +33,8 @@ namespace BenchProject1
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BenchProject1", Version = "v1" });
             });
             services.AddScoped<IStockDataService, StockDataService>();
+            services.AddScoped<ITickerFactory, TickerFactory>();
+            services.AddScoped<ITickRepository, TickRepository>();
             services.AddScoped<TickContext>();
         }
 
