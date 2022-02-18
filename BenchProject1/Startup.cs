@@ -31,11 +31,13 @@ namespace BenchProject1
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BenchProject1", Version = "v1" });
+                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First()); //This line
             });
             services.AddScoped<IStockDataService, StockDataService>();
             services.AddScoped<ITickerFactory, TickerFactory>();
             services.AddScoped<ITickRepository, TickRepository>();
             services.AddScoped<TickContext>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,6 +51,7 @@ namespace BenchProject1
             }
 
             app.UseHttpsRedirection();
+            app.UseDeveloperExceptionPage();
 
             app.UseRouting();
 

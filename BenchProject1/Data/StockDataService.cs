@@ -75,8 +75,7 @@ namespace BenchProject1
 
         public List<Tick> ReadEntries(DateTime startDate, DateTime endDate)
         {
-            CreateCredentials();
-            
+            CreateCredentials();            
 
             var entries = new List<Tick>();
             var range = $"{sheet}!A2:B";
@@ -103,9 +102,9 @@ namespace BenchProject1
             for (int i=0; i<entries.Count; i++)
             {
                 var date = entries.ElementAt(i).TickDateTime;
-                if (DateTime.Compare(endDate, date) < 0
+                if (DateTime.Compare(endDate, date) >= 0
                     &&
-                   (DateTime.Compare(startDate, date) > 0))
+                   (DateTime.Compare(startDate, date) <= 0))
                 {
                     inDateEntries.Add(entries.ElementAt(i));
                 }

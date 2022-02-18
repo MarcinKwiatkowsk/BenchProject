@@ -37,7 +37,7 @@ namespace BenchProject1.Controllers
                (DateTime.Compare(startDate, ticks.First().TickDateTime) < 0))
                 {
                     {
-                        ticks = await FetchData(startDate, endDate, ticks);
+                        ticks =  FetchData(startDate, endDate, ticks);
 
                     }
                     error = "Successful";
@@ -46,7 +46,7 @@ namespace BenchProject1.Controllers
             }
             catch (Exception e)
             {
-                ticks = await FetchData(startDate, endDate, ticks);
+                ticks =  FetchData(startDate, endDate, ticks);
                 if (ticks.Count == 0) error = "No data";
                else if (DateTime.Compare(endDate, ticks.Last().TickDateTime) > 0
                  &&
@@ -59,11 +59,20 @@ namespace BenchProject1.Controllers
         }
 
         [HttpGet]
-        public async Task<List<Tick>> FetchData([FromQuery] DateTime startDate, [FromQuery] DateTime endDate, List<Tick> ticks)
+        public List<Tick> Get([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
+        {
+            List<Tick> entries = _stockDataService.ReadEntries(startDate, endDate);
+          //  List<Tick> entries = _stockDataService.ReadEntries();
+            return entries;
+        }
+
+
+        [HttpPut]
+        public List<Tick> FetchData( DateTime startDate, DateTime endDate, List<Tick> ticks)
         {
             var entries = _stockDataService.ReadEntries();
             var dateEntries = _stockDataService.ReadEntries(startDate, endDate);
-             _tickRepository.Add(dateEntries.Except(ticks).ToList());
+            _tickRepository.Add(dateEntries.Except(ticks).ToList());
             return dateEntries;
         }
     }
