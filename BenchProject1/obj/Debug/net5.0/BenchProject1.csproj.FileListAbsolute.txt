@@ -49,3 +49,13 @@ C:\Users\marci\source\repos\BenchProject1\BenchProject1\bin\Debug\net5.0\runtime
 C:\Users\marci\source\repos\BenchProject1\BenchProject1\bin\Debug\net5.0\runtimes\linux\native\libmongocrypt.so
 C:\Users\marci\source\repos\BenchProject1\BenchProject1\bin\Debug\net5.0\runtimes\osx\native\libmongocrypt.dylib
 C:\Users\marci\source\repos\BenchProject1\BenchProject1\bin\Debug\net5.0\runtimes\win\native\mongocrypt.dll
+C:\Users\marci\source\repos\BenchProject1\BenchProject1\bin\Debug\net5.0\ClientApp\angular.json
+C:\Users\marci\source\repos\BenchProject1\BenchProject1\bin\Debug\net5.0\ClientApp\e2e\tsconfig.e2e.json
+C:\Users\marci\source\repos\BenchProject1\BenchProject1\bin\Debug\net5.0\ClientApp\package-lock.json
+C:\Users\marci\source\repos\BenchProject1\BenchProject1\bin\Debug\net5.0\ClientApp\package.json
+C:\Users\marci\source\repos\BenchProject1\BenchProject1\bin\Debug\net5.0\ClientApp\src\tsconfig.app.json
+C:\Users\marci\source\repos\BenchProject1\BenchProject1\bin\Debug\net5.0\ClientApp\src\tsconfig.server.json
+C:\Users\marci\source\repos\BenchProject1\BenchProject1\bin\Debug\net5.0\ClientApp\src\tsconfig.spec.json
+C:\Users\marci\source\repos\BenchProject1\BenchProject1\bin\Debug\net5.0\ClientApp\src\tslint.json
+C:\Users\marci\source\repos\BenchProject1\BenchProject1\bin\Debug\net5.0\ClientApp\tsconfig.json
+C:\Users\marci\source\repos\BenchProject1\BenchProject1\bin\Debug\net5.0\ClientApp\tslint.json
