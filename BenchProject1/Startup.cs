@@ -27,6 +27,7 @@ namespace BenchProject1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -61,6 +62,11 @@ namespace BenchProject1
             {
                 endpoints.MapControllers();
             });
+            app.UseCors(x => x
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true).WithOrigins("https://localhost:4200") // Allow only this origin can also have multiple origins separated with comma
+                .AllowCredentials()); // allow credentials
         }
     }
 }
