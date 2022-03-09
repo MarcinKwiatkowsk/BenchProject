@@ -38,7 +38,7 @@ namespace BenchProject1
             services.AddScoped<ITickerFactory, TickerFactory>();
             services.AddScoped<ITickRepository, TickRepository>();
             services.AddScoped<TickContext>();
-            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +51,13 @@ namespace BenchProject1
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BenchProject1 v1"));
             }
 
+            app.UseCors(x => x
+                 .AllowAnyMethod()
+                 .AllowAnyHeader()
+                 .AllowCredentials()
+                 .WithOrigins("http://localhost:4200")
+                 );
+
             app.UseHttpsRedirection();
             app.UseDeveloperExceptionPage();
 
@@ -62,11 +69,8 @@ namespace BenchProject1
             {
                 endpoints.MapControllers();
             });
-            app.UseCors(x => x
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .SetIsOriginAllowed(origin => true).WithOrigins("https://localhost:4200") // Allow only this origin can also have multiple origins separated with comma
-                .AllowCredentials()); // allow credentials
+
+            
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BenchProject1.Data;
 using BenchProject1.Models;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
