@@ -11,20 +11,26 @@ import { TickService } from '../tick.service';
 export class ChartComponent implements OnInit {
   constructor(private tickService: TickService) {}
 
-  seriesX: Array<number> = [];
-  seriesY: Array<string> = [];
+  ticks: any;
+  series: Array<Tick> = [];
+  seriesX: Array<string> = [];
 
   ngOnInit(): void {
-    this.getData(this.seriesX, this.seriesY);
-    console.log(this.seriesX);
-    console.log(this.seriesY);
+    this.tickService.getTicks().subscribe((result) => {
+      this.series = result;
+
+      console.log(this.series);
+    });
+    this.getSeriesX(this.series);    
+    
   }
 
-  getData(seriesX: Array<number>, seriesY: Array<string>) {
-    this.tickService.getTicks().forEach(function (i: Tick): void {
-      seriesX.push(i.getValue);
-      seriesY.push(i.getDate);
-    });
+  getSeriesX(series: Array<Tick>){
+
+    for (let i=0; i<series.length; i++){
+      this.seriesX[i] = this.series[i].getValue;
+    }
+    console.log(this.seriesX);
   }
 
   public chartType: string = 'line';
@@ -33,7 +39,7 @@ export class ChartComponent implements OnInit {
     { data: this.seriesX, label: 'Google chart' },
   ];
 
-  public chartLabels: Array<any> = [this.seriesY];
+  public chartLabels: Array<any> = [this.series];
 
   public chartColors: Array<any> = [
     {
