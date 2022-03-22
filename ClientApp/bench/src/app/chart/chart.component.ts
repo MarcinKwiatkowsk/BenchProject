@@ -1,5 +1,7 @@
 import { HttpResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { Subscription } from 'rxjs';
 import { Tick } from '../models/tick';
 import { TickService } from '../tick.service';
 
@@ -11,35 +13,26 @@ import { TickService } from '../tick.service';
 export class ChartComponent implements OnInit {
   constructor(private tickService: TickService) {}
 
-  ticks: any;
+  @Input() eventFromDate: NgbDate;
   series: Array<Tick> = [];
+  seriesY: Array<number> = [];
   seriesX: Array<string> = [];
 
-  ngOnInit(): void {
-    this.tickService.getTicks().subscribe((result) => {
-      this.series = result;
+  ngOnInit(): void {}
 
-      console.log(this.series);
-    });
-    this.getSeriesX(this.series);    
-    
-  }
-
-  getSeriesX(series: Array<Tick>){
-
-    for (let i=0; i<series.length; i++){
-      this.seriesX[i] = this.series[i].getValue;
-    }
-    console.log(this.seriesX);
+  getData() {
+    this.series = this.tickService.getSeries();
+    this.seriesY = this.series.map(y => y.tickValue);
+    this.seriesX = this.series.map(x => x.tickDateTime);
   }
 
   public chartType: string = 'line';
 
   public chartDatasets: Array<any> = [
-    { data: this.seriesX, label: 'Google chart' },
+    { data: this.seriesY, label: 'Google chart' },
   ];
 
-  public chartLabels: Array<any> = [this.series];
+  public chartLabels: Array<any> = [this.seriesX];
 
   public chartColors: Array<any> = [
     {
@@ -59,4 +52,15 @@ export class ChartComponent implements OnInit {
   };
   public chartClicked(e: any): void {}
   public chartHovered(e: any): void {}
+  
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.series) {
+      this.reloadChart();
+    }
+  }
+  reloadChart() {
+    if (this.chart !== undefined) {
+      this.setDataToChart();
+    }
+  }
 }

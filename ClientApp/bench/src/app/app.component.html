@@ -1,4 +1,3 @@
-<app-datepicker></app-datepicker>
-
-<app-chart></app-chart>
+<app-datepicker (fromDateEvent)="receiveFromDate($event)"></app-datepicker>
+<app-chart [eventFromDate] = "fromDateEvent" ></app-chart>
 

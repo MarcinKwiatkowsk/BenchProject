@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { TickService } from './tick.service';
 
 @Component({
@@ -8,9 +9,14 @@ import { TickService } from './tick.service';
 })
 export class AppComponent implements OnInit{
   title = 'bench';
+  public fromDateEvent;
+
+  receiveFromDate(event: NgbDate){
+    this.fromDateEvent = event;
+  }
 
   ngOnInit(): void {
-    console.log(this.tickService.getTicks().subscribe());
+   
   }
 
   constructor(private tickService: TickService){ }

@@ -1,23 +1,27 @@
-import { Component, OnInit } from '@angular/core';
-import {NgbDate, NgbCalendar} from '@ng-bootstrap/ng-bootstrap';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { tick } from '@angular/core/testing';
+import { NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import { Tick } from '../models/tick';
+import { TickService } from '../tick.service';
 
 @Component({
   selector: 'app-datepicker',
   templateUrl: './datepicker.component.html',
-  styleUrls: ['./datepicker.component.scss']
+  styleUrls: ['./datepicker.component.scss'],
 })
 export class DatepickerComponent implements OnInit {
+  ngOnInit(): void {}
 
-
-  ngOnInit(): void {
-  }
+  @Output() fromDateEvent = new EventEmitter<NgbDate>();
+  @Output() toDateEvent = new EventEmitter<NgbDate>();
 
   hoveredDate: NgbDate | null = null;
+  ticks: Tick[] = [];
 
   fromDate: NgbDate;
-  toDate: NgbDate | null = null;
+  toDate: NgbDate | null;
 
-  constructor(calendar: NgbCalendar) {
+  constructor(calendar: NgbCalendar, private tickService: TickService) {
     this.fromDate = calendar.getToday();
     this.toDate = calendar.getNext(calendar.getToday(), 'd', 10);
   }
@@ -34,7 +38,13 @@ export class DatepickerComponent implements OnInit {
   }
 
   isHovered(date: NgbDate) {
-    return this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate) && date.before(this.hoveredDate);
+    return (
+      this.fromDate &&
+      !this.toDate &&
+      this.hoveredDate &&
+      date.after(this.fromDate) &&
+      date.before(this.hoveredDate)
+    );
   }
 
   isInside(date: NgbDate) {
@@ -42,7 +52,15 @@ export class DatepickerComponent implements OnInit {
   }
 
   isRange(date: NgbDate) {
-    return date.equals(this.fromDate) || (this.toDate && date.equals(this.toDate)) || this.isInside(date) || this.isHovered(date);
+    return (
+      date.equals(this.fromDate) ||
+      (this.toDate && date.equals(this.toDate)) ||
+      this.isInside(date) ||
+      this.isHovered(date)
+    );
   }
 
+  submitDates() {   
+    this.tickService.setTicks(this.fromDate, this.toDate);
+  }
 }
