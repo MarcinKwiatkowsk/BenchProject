@@ -28,6 +28,13 @@ export class TickService {
       this.series = res;
     });
   }
+
+  getTicks(fromDate: NgbDate, toDate: NgbDate | null){
+    let fromDateParsed = this.parseDate(fromDate);
+    let toDateParsed = this.parseDate(toDate);
+
+    return this.http.get<Tick[]>(`https://localhost:44377/Ticker?startDate=${fromDateParsed}%2016%3A00%3A00&endDate=${toDateParsed}%2016%3A00%3A00`)
+  }
  
   getSeries(){
     return this.series;

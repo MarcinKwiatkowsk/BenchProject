@@ -10,10 +10,8 @@ import { TickService } from '../tick.service';
   styleUrls: ['./datepicker.component.scss'],
 })
 export class DatepickerComponent implements OnInit {
-  ngOnInit(): void {}
-
-  @Output() fromDateEvent = new EventEmitter<NgbDate>();
-  @Output() toDateEvent = new EventEmitter<NgbDate>();
+  ngOnInit(): void {
+  }
 
   hoveredDate: NgbDate | null = null;
   ticks: Tick[] = [];
@@ -58,9 +56,14 @@ export class DatepickerComponent implements OnInit {
       this.isInside(date) ||
       this.isHovered(date)
     );
+
   }
 
   submitDates() {   
-    this.tickService.setTicks(this.fromDate, this.toDate);
+     this.tickService.setTicks(this.fromDate, this.toDate);
+     this.tickService.getTicks(this.fromDate, this.toDate).subscribe((res)=>{
+       this.ticks = res;
+     });
+     console.log(this.ticks);
   }
 }

@@ -1,6 +1,14 @@
 import { HttpResponse } from '@angular/common/http';
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+  OnChanges,
+} from '@angular/core';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { ChartsModule } from 'angular-bootstrap-md';
 import { Subscription } from 'rxjs';
 import { Tick } from '../models/tick';
 import { TickService } from '../tick.service';
@@ -10,29 +18,32 @@ import { TickService } from '../tick.service';
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.scss'],
 })
-export class ChartComponent implements OnInit {
+export class ChartComponent implements OnInit, OnChanges {
+  @Input() series: Array<Tick> = [];
+  @ViewChild('baseChart') private chart: ChartsModule;
+
+  private dataSetContent = [];
+
   constructor(private tickService: TickService) {}
-
-  @Input() eventFromDate: NgbDate;
-  series: Array<Tick> = [];
-  seriesY: Array<number> = [];
-  seriesX: Array<string> = [];
-
-  ngOnInit(): void {}
-
-  getData() {
-    this.series = this.tickService.getSeries();
-    this.seriesY = this.series.map(y => y.tickValue);
-    this.seriesX = this.series.map(x => x.tickDateTime);
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('ZMIENIONE');
+    this.reloadChart();
   }
+
+  reloadChart() {
+      this.setDataToChart();
+    
+  }
+
+  ngOnInit(): void {
+  }
+
 
   public chartType: string = 'line';
 
-  public chartDatasets: Array<any> = [
-    { data: this.seriesY, label: 'Google chart' },
-  ];
+  public chartDatasets: Array<any> = [{ data: [], label: 'Google chart' }];
 
-  public chartLabels: Array<any> = [this.seriesX];
+  public chartLabels: Array<any> = [];
 
   public chartColors: Array<any> = [
     {
@@ -52,15 +63,16 @@ export class ChartComponent implements OnInit {
   };
   public chartClicked(e: any): void {}
   public chartHovered(e: any): void {}
-  
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.series) {
-      this.reloadChart();
-    }
-  }
-  reloadChart() {
-    if (this.chart !== undefined) {
-      this.setDataToChart();
+
+  setDataToChart() {
+    this.dataSetContent = [];
+    this.series.forEach((data) => {
+      this.chartDatasets.push(data.tickValue);      
+    });
+    this.chartDatasets[0].data = this.dataSetContent;
+
+    for(let i=0; i<=this.chartDatasets.length; i++){
+      console.log("CHART DATASET: " + i + "TO: " + this.chartDatasets[i])
     }
   }
 }
