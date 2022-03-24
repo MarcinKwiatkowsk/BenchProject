@@ -20,9 +20,6 @@ import { TickService } from '../tick.service';
 })
 export class ChartComponent implements OnInit, OnChanges {
   @Input() series: Array<Tick> = [];
-  @ViewChild('baseChart') private chart: ChartsModule;
-
-  private dataSetContent = [];
 
   constructor(private tickService: TickService) {}
   ngOnChanges(changes: SimpleChanges): void {
@@ -31,13 +28,10 @@ export class ChartComponent implements OnInit, OnChanges {
   }
 
   reloadChart() {
-      this.setDataToChart();
-    
+    this.setDataToChart();
   }
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 
   public chartType: string = 'line';
 
@@ -58,21 +52,28 @@ export class ChartComponent implements OnInit, OnChanges {
     },
   ];
 
-  public chartOptions: any = {
+  chartOptions: any = {
     responsive: true,
   };
   public chartClicked(e: any): void {}
   public chartHovered(e: any): void {}
 
   setDataToChart() {
-    this.dataSetContent = [];
-    this.series.forEach((data) => {
-      this.chartDatasets.push(data.tickValue);      
-    });
-    this.chartDatasets[0].data = this.dataSetContent;
+    let datasetArray = [];
+    let labelArray = [];
 
-    for(let i=0; i<=this.chartDatasets.length; i++){
-      console.log("CHART DATASET: " + i + "TO: " + this.chartDatasets[i])
+    this.series.forEach((data) => {
+      datasetArray.push(data.tickValue);
+      labelArray.push(data.tickDateTime);
+    });
+    this.chartDatasets[0].data = datasetArray;
+    this.chartLabels = labelArray;
+
+    for (let i = 0; i < this.chartDatasets[0].data.length; i++) {
+      console.log(
+        'CHART DATASET: ' + i + ' TO: ' + this.chartDatasets[0].data[i]
+      );
+      console.log('CHART LABELS: ' + i + ' TO: ' + this.chartLabels[i]);
     }
   }
 }
