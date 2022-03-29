@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  benchproject1:
+    image: ${DOCKER_REGISTRY-}benchproject1
+    build:
+      context: .
+      dockerfile: BenchProject1/Dockerfile
