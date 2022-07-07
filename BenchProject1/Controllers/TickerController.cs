@@ -1,6 +1,5 @@
 ﻿using BenchProject1.Data;
 using BenchProject1.Models;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -28,7 +27,7 @@ namespace BenchProject1.Controllers
         [HttpPost]
         public async Task<Ticker> CreateTicker([FromForm] DateTime startDate, [FromForm] DateTime endDate)
         {
-            var ticks = _tickRepository.Get(startDate, endDate);
+            var ticks = await _tickRepository.Get(startDate, endDate);
             string error = "";
 
             try
@@ -39,7 +38,6 @@ namespace BenchProject1.Controllers
                 {
                     {
                         ticks =  FetchData(startDate, endDate, ticks);
-
                     }
                     error = "Successful";
                     return _tickerFactory.Create(ticks, error);
@@ -63,15 +61,13 @@ namespace BenchProject1.Controllers
         public List<Tick> Get([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
         {
             List<Tick> entries = _stockDataService.ReadEntries(startDate, endDate);
-          //  List<Tick> entries = _stockDataService.ReadEntries();
             return entries;
         }
 
 
         [HttpPut]
-        public List<Tick> FetchData( DateTime startDate, DateTime endDate, List<Tick> ticks)
+        private List<Tick> FetchData( DateTime startDate, DateTime endDate, List<Tick> ticks)
         {
-            var entries = _stockDataService.ReadEntries();
             var dateEntries = _stockDataService.ReadEntries(startDate, endDate);
             _tickRepository.Add(dateEntries.Except(ticks).ToList());
             return dateEntries;

@@ -1,8 +1,23 @@
 version: '3.4'
 
 services:
+
+  client-app-docker:
+    image: ${DOCKER_REGISTRY-}client-app-docker
+    build:
+      context: ./ClientApp/bench
+      dockerfile: ./Dockerfile
+      
+
   benchproject1:
     image: ${DOCKER_REGISTRY-}benchproject1
     build:
       context: .
       dockerfile: BenchProject1/Dockerfile
+
+  mongo:
+    image: ${DOCKER_REGISTRY-}mongo
+
+  
+
+

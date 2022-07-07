@@ -1,9 +1,9 @@
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Sheets.v4;
+using BenchProject1.Data;
+using BenchProject1.Data.DataSeeder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.IO;
 
 namespace BenchProject1
 {
@@ -12,7 +12,19 @@ namespace BenchProject1
 
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var context = services.GetRequiredService<TickContext>();
+
+                context.Database.EnsureCreated();
+                context.Database.Migrate();
+                CompanySeeder.SeedData(context);
+            }
+
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

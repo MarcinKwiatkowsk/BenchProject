@@ -1,0 +1,37 @@
+services:
+  benchproject1:
+    build:
+      context: C:\Users\marci\source\repos\BenchProject1
+      dockerfile: BenchProject1/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: https://+:443;http://+:80
+    image: benchproject1
+    ports:
+    - published: 8000
+      target: 80
+    - target: 443
+    volumes:
+    - C:\Users\marci\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
+    - C:\Users\marci\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+  client-app-docker:
+    build:
+      context: C:\Users\marci\source\repos\BenchProject1\ClientApp\bench
+      dockerfile: ./Dockerfile
+    depends_on:
+      benchproject1:
+        condition: service_started
+    image: client-app-docker
+    ports:
+    - published: 8001
+      target: 80
+  mongo:
+    container_name: bench-mongo1
+    image: mongo
+    ports:
+    - published: 27017
+      target: 27017
+    restart: always
+    volumes:
+    - /site:/data/db`:rw
+version: '3.4'

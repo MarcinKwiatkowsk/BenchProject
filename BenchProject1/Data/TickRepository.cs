@@ -1,5 +1,5 @@
 ﻿using BenchProject1.Models;
-using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,29 +15,26 @@ namespace BenchProject1.Data
         {
             _context = context;
         }
-        public void Add(List<Tick> ticks)
+        public async Task Add(List<Tick> ticks)
         {
-             _context.Ticks.AddRange(ticks);
-            // _context.Ticks.AddRange(ticks);
+            _context.Ticks.AddRange(ticks);
+            await _context.SaveChangesAsync();
         }
 
-        public void Add(Tick tick)
+        public async Task Add(Tick tick)
         {
-             _context.Ticks.AddRange((IEnumerable<Tick>)tick);
+            _context.Ticks.Add(tick);
+            await _context.SaveChangesAsync();
         }
 
-        public List<Tick> Get(DateTime start, DateTime end)
+        public async Task<List<Tick>> Get(DateTime start, DateTime end)
         {
-            List<Tick> allTicks = _context.Ticks;
-            //List<Tick> tickInDates = allTicks.Select(t => t.TickDateTime > start).Where(t => t.TickDateTime < end);
-            List<Tick> tickInDates = allTicks.Where(t => t.TickDateTime > start && t.TickDateTime < end).ToList();
-            return tickInDates;
+            return await _context.Ticks.Where(t => t.TickDateTime > start && t.TickDateTime < end).ToListAsync();
         }
 
-        public List<Tick> Get()
+        public async Task<List<Tick>> Get()
         {
-
-            return (List<Tick>)_context.Ticks;
+            return await _context.Ticks.ToListAsync();
         }
 
 

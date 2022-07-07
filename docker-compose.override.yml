@@ -6,8 +6,22 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
     ports:
-      - "80"
+      - "8000:80"
       - "443"
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  client-app-docker:
+    ports:
+      - "8001:80"
+    depends_on:
+      - benchproject1
+
+  mongo:
+    container_name: bench-mongo1
+    restart: always
+    ports:
+     - "27017:27017"
+    volumes:
+    - ${d224704e7bd62b57cf225b72541dc10893fa366d2d89ca67f9e5df87447db1aa}/site:/data/db`    

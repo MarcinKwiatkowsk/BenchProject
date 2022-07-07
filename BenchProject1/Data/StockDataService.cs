@@ -3,12 +3,11 @@ using BenchProject1.Models;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 
 namespace BenchProject1
 {
@@ -43,31 +42,6 @@ namespace BenchProject1
             return date.ToString();
         }
 
-        public List<Tick> ReadEntries()
-        {
-            CreateCredentials();
-            var entries = new List<Tick>();
-            var range = $"{sheet}!A2:B";
-            SpreadsheetsResource.ValuesResource.GetRequest request =
-                    service.Spreadsheets.Values.Get(SpreadsheetId, range);
-            var response = request.Execute();
-            IList<IList<object>> values = response.Values;
-            if (values != null && values.Count > 0)
-            {
-                foreach (var row in values)
-                {
-                    if (row.Count == 0) break;
-                    entries.Add(new Tick
-                    {
-                        Id = generateID(),
-                        TickDateTime = DateTime.Parse(row[0].ToString()),
-                        TickValue = double.Parse(row[1].ToString())
-                    });
-                }
-            }
-            return entries;
-        }
-
         public string TrimDateToDay(DateTime date)
         {
             return date.ToString("yyyyMMdd");
@@ -75,7 +49,7 @@ namespace BenchProject1
 
         public List<Tick> ReadEntries(DateTime startDate, DateTime endDate)
         {
-            CreateCredentials();            
+            CreateCredentials();
 
             var entries = new List<Tick>();
             var range = $"{sheet}!A2:B";
@@ -99,7 +73,7 @@ namespace BenchProject1
 
             var inDateEntries = new List<Tick>();
 
-            for (int i=0; i<entries.Count; i++)
+            for (int i = 0; i < entries.Count; i++)
             {
                 var date = entries.ElementAt(i).TickDateTime;
                 if (DateTime.Compare(endDate, date) >= 0
