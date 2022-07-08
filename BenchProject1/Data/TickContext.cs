@@ -7,10 +7,10 @@ namespace BenchProject1.Data
     {
         public TickContext(DbContextOptions<TickContext> options) : base(options)
         {
+
         }
 
-
         public DbSet<Tick> Ticks { get; set; }
-        public DbSet<Tick> Companies { get; set; }
+        public DbSet<Company> Companies { get; set; }
     }
 }

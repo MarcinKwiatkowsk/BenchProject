@@ -9,7 +9,7 @@ namespace BenchProject1.Data
     {
         public Task Add(List<Tick> ticks);
         public Task Add(Tick tick);
-        public Task<List<Tick>> Get(DateTime start, DateTime end);
+        public Task<List<Tick>> Get(DateTime start, DateTime end, string companyCode);
         public Task<List<Tick>> Get();
     }
 }

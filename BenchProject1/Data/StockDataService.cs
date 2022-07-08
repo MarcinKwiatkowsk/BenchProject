@@ -110,12 +110,15 @@ namespace BenchProject1
             return entries;
         }
 
-        public void UpdateEntry(string cellRow, string stockDate, string cellValue)
+        public void UpdateEntry(string companyCode, DateTime startDate, DateTime endDate)
         {
-            var range = $"{sheet}!A" + cellRow + ":B" + cellRow;
+            var range = $"{sheet}!A1";
             var valueRange = new ValueRange();
+            var cellValue = $"=GOOGLEFINANCE(\"{companyCode} \"; " +
+                $"\"price\"; DATA({startDate.Year}; {startDate.Month}; {startDate.Day}); " +
+                $"DATA({endDate.Year}; {endDate.Month}; {endDate.Day}); \"DAILY\")";
 
-            var objectList = new List<object>() { stockDate, cellValue };
+            var objectList = new List<object>() { cellValue };
             valueRange.Values = new List<IList<object>> { objectList };
 
             var updateRequest = service.Spreadsheets.Values.Update(valueRange, SpreadsheetId, range);

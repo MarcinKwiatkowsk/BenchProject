@@ -27,14 +27,16 @@ namespace BenchProject1.Data
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Tick>> Get(DateTime start, DateTime end)
+        public async Task<List<Tick>> Get(DateTime start, DateTime end, string companyCode)
         {
-            return await _context.Ticks.Where(t => t.TickDateTime > start && t.TickDateTime < end).ToListAsync();
+            return await _context.Ticks.Where(t => t.TickDateTime >= start &&
+            t.TickDateTime <= end &&
+            t.Company.Code == companyCode).ToListAsync();
         }
 
         public async Task<List<Tick>> Get()
         {
-            return await _context.Ticks.ToListAsync();
+            return await _context.Ticks.OrderBy(x => x.TickDateTime).ToListAsync();
         }
 
 

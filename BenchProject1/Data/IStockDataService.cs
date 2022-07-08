@@ -10,7 +10,7 @@ namespace BenchProject1.Data
         string GetCurrentDateString();
         List<Tick> ReadEntries(DateTime startDate, DateTime endDate);
         List<string> CreateEntries(List<string> entries);
-        void UpdateEntry(string cellRow, string stockDate, string cellValue);
+        void UpdateEntry(string companyCode, DateTime startDate, DateTime endDate);
         void DeleteEntry(string cellRow);
     }
 }

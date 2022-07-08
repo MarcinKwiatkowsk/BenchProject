@@ -60,7 +60,7 @@ export class DatepickerComponent implements OnInit {
   }
 
   submitDates() {   
-     this.tickService.setTicks(this.fromDate, this.toDate);
+   //  this.tickService.setTicks(this.fromDate, this.toDate);
      this.tickService.getTicks(this.fromDate, this.toDate).subscribe((res)=>{
        this.ticks = res;
      });

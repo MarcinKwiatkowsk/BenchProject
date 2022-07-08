@@ -24,52 +24,52 @@ namespace BenchProject1.Controllers
             _tickRepository = tickRepository;
         }
 
-        [HttpPost]
-        public async Task<Ticker> CreateTicker([FromForm] DateTime startDate, [FromForm] DateTime endDate)
+        [HttpGet]
+        public async Task<IActionResult> Get([FromQuery] DateTime startDate, [FromQuery] DateTime endDate, string companyCode)
         {
-            var ticks = await _tickRepository.Get(startDate, endDate);
+            var ticks = await _tickRepository.Get(startDate, endDate, companyCode);
             string error = "";
 
             try
             {
                 if (DateTime.Compare(endDate, ticks.Last().TickDateTime) > 0
                  &&
-               (DateTime.Compare(startDate, ticks.First().TickDateTime) < 0))
+                (DateTime.Compare(startDate, ticks.First().TickDateTime) < 0))
                 {
                     {
-                        ticks =  FetchData(startDate, endDate, ticks);
+                        ticks = await FetchData(startDate, endDate, companyCode, ticks);
                     }
                     error = "Successful";
-                    return _tickerFactory.Create(ticks, error);
+                    return Ok(ticks);
                 }
             }
             catch (Exception e)
             {
-                ticks =  FetchData(startDate, endDate, ticks);
+                ticks = await FetchData(startDate, endDate, companyCode, ticks);
                 if (ticks.Count == 0) error = "No data";
-               else if (DateTime.Compare(endDate, ticks.Last().TickDateTime) > 0
-                 &&
-               (DateTime.Compare(startDate, ticks.First().TickDateTime) < 0))
+                else if (DateTime.Compare(endDate, ticks.Last().TickDateTime) > 0
+                  &&
+                (DateTime.Compare(startDate, ticks.First().TickDateTime) < 0))
                 {
                     error = "The given range is too big";
                 }
             }
-            return _tickerFactory.Create(ticks, error);
+            return Ok(ticks);
         }
-
         [HttpGet]
-        public List<Tick> Get([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
+        [Route("GetAll")]
+        public async Task<IActionResult> GetAll()
         {
-            List<Tick> entries = _stockDataService.ReadEntries(startDate, endDate);
-            return entries;
+            return Ok(await _tickRepository.Get());
         }
-
 
         [HttpPut]
-        private List<Tick> FetchData( DateTime startDate, DateTime endDate, List<Tick> ticks)
+        private async Task<List<Tick>> FetchData(DateTime startDate, DateTime endDate, string companyCode, List<Tick> ticks)
         {
+            _stockDataService.UpdateEntry(companyCode, startDate, endDate);
             var dateEntries = _stockDataService.ReadEntries(startDate, endDate);
-            _tickRepository.Add(dateEntries.Except(ticks).ToList());
+            var difference = dateEntries.Except(ticks).ToList();
+            await _tickRepository.Add(dateEntries.Except(ticks).ToList());
             return dateEntries;
         }
     }
