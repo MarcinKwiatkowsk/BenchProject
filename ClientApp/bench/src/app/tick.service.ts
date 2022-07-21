@@ -1,4 +1,4 @@
-import { Injectable, Output } from '@angular/core';
+import { Injectable, Input, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { delay, Observable, Subject } from 'rxjs';
 import { Tick } from './models/tick';
@@ -6,6 +6,7 @@ import { HttpParams } from '@angular/common/http';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { EventEmitter } from '@angular/core';
 import { setSyntheticTrailingComments } from 'typescript';
+import { Company } from './models/company';
 
 @Injectable({
   providedIn: 'root',
@@ -18,22 +19,35 @@ export class TickService {
   private url = '';
   private series: Array<Tick> = [];
   private subject = new Subject<any>();
+  @Input() companyCodeService: string = "GOOG";
 
-  setTicks(fromDate: NgbDate, toDate: NgbDate | null){
+  // setTicks(fromDate: NgbDate, toDate: NgbDate | null){
 
-    let fromDateParsed = this.parseDate(fromDate);
-    let toDateParsed = this.parseDate(toDate);
+  //   let fromDateParsed = this.parseDate(fromDate);
+  //   let toDateParsed = this.parseDate(toDate);    
 
-    this.http.get<Tick[]>(`https://localhost:44377/Ticker?startDate=${fromDateParsed}%2016%3A00%3A00&endDate=${toDateParsed}%2016%3A00%3A00`).subscribe((res)=>{
-      this.series = res;
-    });
+  //   this.http.get<Tick[]>(`https://localhost:44377/Ticker?startDate=${fromDateParsed}%2016%3A00%3A00&endDate=${toDateParsed}%2016%3A00%3A00`).subscribe((res)=>{
+  //     this.series = res;
+  //   });
+    
+  // }
+
+  getCompanies(){
+    return this.http.get<Company[]>(`https://localhost:44377/Company`);
   }
 
-  getTicks(fromDate: NgbDate, toDate: NgbDate | null){
+  getTicks(fromDate: NgbDate, toDate: NgbDate | null, companyCode:string){
     let fromDateParsed = this.parseDate(fromDate);
     let toDateParsed = this.parseDate(toDate);
+    
+    // return this.http.get<Tick[]>(`https://localhost:44377/Ticker?startDate=${fromDateParsed}%2016%3A00%3A00&endDate=${toDateParsed}%2016%3A00%3A00`)
 
-    return this.http.get<Tick[]>(`https://localhost:44377/Ticker?startDate=${fromDateParsed}%2016%3A00%3A00&endDate=${toDateParsed}%2016%3A00%3A00`)
+    return this.http.get<Tick[]>(`https://localhost:44377/Ticker?startDate=${fromDateParsed}&endDate=${toDateParsed}&companyCode=${companyCode}`);
+  }
+
+  setCompanyCode(companyCode: string){
+    this.companyCodeService = companyCode;
+    window.location.reload();
   }
  
   getSeries(){

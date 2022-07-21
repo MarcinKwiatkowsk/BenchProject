@@ -20,22 +20,23 @@ import { TickService } from '../tick.service';
 })
 export class ChartComponent implements OnInit, OnChanges {
   @Input() series: Array<Tick> = [];
+  @Input() company: string ='';
 
   constructor(private tickService: TickService) {}
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('ZMIENIONE');
-    this.reloadChart();
+       this.reloadChart();
   }
 
   reloadChart() {
     this.setDataToChart();
   }
 
+
   ngOnInit(): void {}
 
   public chartType: string = 'line';
 
-  public chartDatasets: Array<any> = [{ data: [], label: 'Google chart' }];
+  public chartDatasets: Array<any> = [{ data: [], label: this.company + ' chart' }];
 
   public chartLabels: Array<any> = [];
 
@@ -67,13 +68,8 @@ export class ChartComponent implements OnInit, OnChanges {
       labelArray.push(data.tickDateTime);
     });
     this.chartDatasets[0].data = datasetArray;
+    this.chartDatasets[0].label = this.company;
     this.chartLabels = labelArray;
 
-    for (let i = 0; i < this.chartDatasets[0].data.length; i++) {
-      console.log(
-        'CHART DATASET: ' + i + ' TO: ' + this.chartDatasets[0].data[i]
-      );
-      console.log('CHART LABELS: ' + i + ' TO: ' + this.chartLabels[i]);
-    }
   }
 }

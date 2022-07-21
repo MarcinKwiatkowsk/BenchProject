@@ -34,6 +34,7 @@ namespace BenchProject1
             services.AddScoped<IStockDataService, StockDataService>();
             services.AddScoped<ITickerFactory, TickerFactory>();
             services.AddScoped<ITickRepository, TickRepository>();
+            services.AddScoped<ICompanyRepository, CompanyRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

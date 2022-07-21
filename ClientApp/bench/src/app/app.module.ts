@@ -8,9 +8,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbDatepickerModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DatepickerComponent } from './datepicker/datepicker.component';
 import { HttpClientModule } from  '@angular/common/http';
+import { SelectComponent } from './select/select.component';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
-  declarations: [AppComponent, ChartComponent, DatepickerComponent],
+  declarations: [AppComponent, ChartComponent, DatepickerComponent, SelectComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -19,6 +21,7 @@ import { HttpClientModule } from  '@angular/common/http';
     NgbModule,
     NgbDatepickerModule,
     HttpClientModule,
+    MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent],

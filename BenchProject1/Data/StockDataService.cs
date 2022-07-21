@@ -112,6 +112,8 @@ namespace BenchProject1
 
         public void UpdateEntry(string companyCode, DateTime startDate, DateTime endDate)
         {
+            CreateCredentials();
+
             var range = $"{sheet}!A1";
             var valueRange = new ValueRange();
             var cellValue = $"=GOOGLEFINANCE(\"{companyCode} \"; " +

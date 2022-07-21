@@ -3,6 +3,7 @@ import { tick } from '@angular/core/testing';
 import { NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 import { Tick } from '../models/tick';
 import { TickService } from '../tick.service';
+import {Company} from 'src/app/models/company'
 
 @Component({
   selector: 'app-datepicker',
@@ -11,13 +12,21 @@ import { TickService } from '../tick.service';
 })
 export class DatepickerComponent implements OnInit {
   ngOnInit(): void {
+    this.downloadDataToDropdown();
+  }
+
+  downloadDataToDropdown(){
+    this.tickService.getCompanies()
+    .subscribe(data => this.companies = data);
   }
 
   hoveredDate: NgbDate | null = null;
   ticks: Tick[] = [];
-
+  companies: Company[];
+  companyCode: string;
   fromDate: NgbDate;
   toDate: NgbDate | null;
+  isSubmitted: boolean;
 
   constructor(calendar: NgbCalendar, private tickService: TickService) {
     this.fromDate = calendar.getToday();
@@ -59,11 +68,18 @@ export class DatepickerComponent implements OnInit {
 
   }
 
-  submitDates() {   
+  submitDatesAndCode() {   
    //  this.tickService.setTicks(this.fromDate, this.toDate);
-     this.tickService.getTicks(this.fromDate, this.toDate).subscribe((res)=>{
+    
+     this.tickService.getTicks(this.fromDate, this.toDate, this.companyCode).subscribe((res)=>{
        this.ticks = res;
+       this.isSubmitted=true;
      });
+     
      console.log(this.ticks);
+  }
+
+  getCompanyCode(){
+
   }
 }

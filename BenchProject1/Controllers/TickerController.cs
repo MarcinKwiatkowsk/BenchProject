@@ -15,13 +15,15 @@ namespace BenchProject1.Controllers
         private readonly ITickerFactory _tickerFactory;
         private readonly IStockDataService _stockDataService;
         private readonly ITickRepository _tickRepository;
+        private readonly ICompanyRepository _companyRepository;
 
 
-        public TickerController(ITickerFactory tickerFactory, IStockDataService stockDataService, ITickRepository tickRepository)
+        public TickerController(ITickerFactory tickerFactory, IStockDataService stockDataService, ITickRepository tickRepository, ICompanyRepository companyRepository)
         {
             _tickerFactory = tickerFactory;
             _stockDataService = stockDataService;
             _tickRepository = tickRepository;
+            _companyRepository = companyRepository;
         }
 
         [HttpGet]
@@ -68,7 +70,8 @@ namespace BenchProject1.Controllers
         {
             _stockDataService.UpdateEntry(companyCode, startDate, endDate);
             var dateEntries = _stockDataService.ReadEntries(startDate, endDate);
-            var difference = dateEntries.Except(ticks).ToList();
+            var company = await _companyRepository.Get(companyCode);
+            dateEntries.ForEach(t => t.Company = company);
             await _tickRepository.Add(dateEntries.Except(ticks).ToList());
             return dateEntries;
         }
