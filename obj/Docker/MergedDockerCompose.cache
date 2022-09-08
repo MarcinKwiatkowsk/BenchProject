@@ -25,13 +25,6 @@ services:
     ports:
     - published: 8001
       target: 80
-  mongo:
-    container_name: bench-mongo1
-    image: mongo
-    ports:
-    - published: 27017
-      target: 27017
-    restart: always
-    volumes:
-    - /site:/data/db`:rw
+  ms-sql-server:
+    image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
 version: '3.4'

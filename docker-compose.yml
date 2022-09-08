@@ -10,13 +10,29 @@ services:
       
 
   benchproject1:
+    container_name: api-container
+    restart: always
+    depends_on: 
+     - mssql
+    ports:
+     - 8000:80
+     - 8001:443
     image: ${DOCKER_REGISTRY-}benchproject1
     build:
-      context: .
+      context: ./
       dockerfile: BenchProject1/Dockerfile
+    environment:
+     - ConnectionsStrings__TickDatabase=Server=hopeful_benz, 1433;Database=TickDatabase;User Id=sa;Password=Pwd12345!
 
-  mongo:
-    image: ${DOCKER_REGISTRY-}mongo
+  mssql:
+    container_name: hopeful_benz
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Pwd12345!"
+      MSSQL_PID: "Developer"
+    ports:
+      - 11433:1433
 
   
 

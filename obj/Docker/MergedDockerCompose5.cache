@@ -1,0 +1,45 @@
+services:
+  benchproject1:
+    build:
+      context: C:\Users\marci\source\repos\BenchProject1
+      dockerfile: BenchProject1/Dockerfile
+    depends_on:
+      mssql:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: https://+:443;http://+:80
+    image: benchproject1
+    ports:
+    - published: 8000
+      target: 80
+    - target: 443
+    - published: 433
+      target: 1433
+    - published: 80
+      target: 11433
+    volumes:
+    - C:\Users\marci\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
+    - C:\Users\marci\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+  client-app-docker:
+    build:
+      context: C:\Users\marci\source\repos\BenchProject1\ClientApp\bench
+      dockerfile: ./Dockerfile
+    depends_on:
+      benchproject1:
+        condition: service_started
+    image: client-app-docker
+    ports:
+    - published: 8001
+      target: 80
+  mssql:
+    container_name: hopeful_benz
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+      SA_PASSWORD: Pwd12345!
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    ports:
+    - published: 11433
+      target: 1433
+version: '3.4'

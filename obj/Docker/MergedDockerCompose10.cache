@@ -1,0 +1,30 @@
+services:
+  benchproject1:
+    build:
+      context: C:\Users\marci\source\repos\BenchProject1
+      dockerfile: BenchProject1/Dockerfile
+    depends_on:
+      mssql:
+        condition: service_started
+    image: benchproject1
+    ports:
+    - published: 8000
+      target: 80
+    - published: 8001
+      target: 443
+  client-app-docker:
+    build:
+      context: C:\Users\marci\source\repos\BenchProject1\ClientApp\bench
+      dockerfile: ./Dockerfile
+    image: client-app-docker
+  mssql:
+    container_name: hopeful_benz
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+      SA_PASSWORD: Pwd12345!
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    ports:
+    - published: 11433
+      target: 1433
+version: '3.4'
